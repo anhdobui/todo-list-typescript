@@ -1,0 +1,42 @@
+.taskList {
+    margin-bottom: 2rem;
+}
+.title {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+.taskRow {
+    display: flex;
+    align-items: flex-start;
+    &:not(:last-child) {
+        margin-bottom: 1rem;
+    }
+    input {
+        flex: 0 0 10%;
+        max-width: 10%;
+        height: 2rem;
+        margin-top: 0.5rem;
+    }
+    .taskName {
+        flex: 0 0 75%;
+        max-width: 75%;
+        padding: 0 0 0.5rem;
+        color: #383f50;
+        &.taskNameDone {
+            color: #b2b7bb;
+            text-decoration: line-through;
+        }
+    }
+    .taskActions {
+        flex: 0 0 15%;
+        max-width: 15%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.8rem;
+
+        .btn {
+            cursor: pointer;
+        }
+    }
+}

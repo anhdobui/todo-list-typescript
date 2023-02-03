@@ -1,0 +1,32 @@
+.title {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+.form {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    .inputSearch {
+        flex-grow: 1;
+        outline: 0;
+        border: 1px solid #000;
+        border-radius: 0.7rem;
+        padding: 0 0.5rem;
+        margin-right: 1rem;
+        height: 4rem;
+    }
+    .submit {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5rem;
+        height: 4rem;
+        border: 1px solid #333;
+        border-radius: 0.7rem;
+        cursor: pointer;
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}

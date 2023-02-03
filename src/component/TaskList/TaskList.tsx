@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import { Todo } from './../../@types/todo.type';
 import { TodoTypes } from '../../PropTypes/todo.proptypes';
+import { InjectedType } from '../../HOC/connect';
+import connect from '../../HOC/connect';
 import styles from './taskList.module.scss';
 const cx = classNames.bind(styles);
-interface TaskListProps {
+interface TaskListProps extends InjectedType {
     title?: string;
     isDone?: boolean;
     todos: Todo[];
@@ -46,12 +48,12 @@ function TaskList({ title, isDone, todos, handleDoneTodos, startEditTodo, delete
     );
 }
 
-export default TaskList;
 TaskList.propTypes = {
     title: PropTypes.string.isRequired,
     isDone: PropTypes.bool,
-    todos: PropTypes.arrayOf(TodoTypes),
+    todos: PropTypes.arrayOf(TodoTypes).isRequired,
     handleDoneTodos: PropTypes.func.isRequired,
     startEditTodo: PropTypes.func.isRequired,
     deleteTodo: PropTypes.func.isRequired,
 };
+export default connect({ user: { name: 'do' } })(TaskList);

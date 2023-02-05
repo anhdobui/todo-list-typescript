@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import TaskInput from '../TaskInput';
 import TaskList from '../TaskList';
 
 import styles from './todoApp.module.scss';
 import { Todo } from './../../@types/todo.type';
+import reducer, { initialState } from '../../reducer/reducer';
 
 // interface HandleNewTodos {
 //     (todos: Todo[]): Todo[];
@@ -17,18 +18,18 @@ const syncReactToLocal = (handleNewTodos: HandleNewTodos) => {
     const newTodoObj = handleNewTodos(todoObj);
     localStorage.setItem('todos', JSON.stringify(newTodoObj));
 };
+
 function TodoApp() {
-    const [todos, setTodos] = useState<Todo[]>([]);
+    const [state, dispatch] = useReducer(reducer, initialState);
     const [currentTodo, setCurrentTodo] = useState<Todo | null>(null);
-    const doneTodos = todos.filter((todo) => todo.done);
-    const notDoneTodos = todos.filter((todo) => !todo.done);
+    const doneTodos = state.filter((todo) => todo.done);
+    const notDoneTodos = state.filter((todo) => !todo.done);
 
     useEffect(() => {
         const todoString = localStorage.getItem('todos');
         const todoObj = JSON.parse(todoString || '[]');
-        setTodos(todoObj);
+        dispatch({ type: 'get_local', payload: todoObj });
     }, []);
-
     const addTodos = (name: string) => {
         if (name.trim()) {
             const todo: Todo = {
@@ -36,7 +37,8 @@ function TodoApp() {
                 done: false,
                 id: new Date().toISOString(),
             };
-            setTodos((prev) => [...prev, todo]);
+            dispatch({ type: 'add_todo', payload: todo });
+            // setTodos((prev) => [...prev, todo]);
             syncReactToLocal((todoObj: Todo[]) => [...todoObj, todo]);
         }
     };
@@ -49,12 +51,13 @@ function TodoApp() {
                 return todo;
             });
         };
-        setTodos((prev) => handler(prev));
+        dispatch({ type: 'edit_and_change_done', payload: handler });
+        // setTodos((prev) => handler(prev));
         syncReactToLocal(handler);
     };
 
     const startEditTodo = (id: string) => {
-        const findedTodo = todos.find((todo) => todo.id === id);
+        const findedTodo = state.find((todo) => todo.id === id);
         if (findedTodo) {
             setCurrentTodo(findedTodo);
         }
@@ -79,7 +82,7 @@ function TodoApp() {
             };
 
             if ((currentTodo as Todo).name.trim()) {
-                setTodos((prev) => handler(prev));
+                dispatch({ type: 'edit_and_change_done', payload: handler });
                 syncReactToLocal(handler);
             } else {
                 deleteTodo((currentTodo as Todo).id);
@@ -91,9 +94,13 @@ function TodoApp() {
         if (currentTodo) {
             setCurrentTodo(null);
         }
-        setTodos((prev) => {
-            return prev.filter((todo) => todo.id !== id);
+        dispatch({
+            type: 'edit_and_change_done',
+            payload: (prev) => {
+                return prev.filter((todo) => todo.id !== id);
+            },
         });
+
         syncReactToLocal((todos) => todos.filter((todo) => todo.id !== id));
     };
     return (
